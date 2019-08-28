@@ -1,0 +1,96 @@
+version: '3'
+
+services:
+
+  app:
+    image: practica13
+
+    container_name: app
+    
+    environment:
+      - SERVER_PORT=80
+
+    networks:
+      - practica13-mysql
+
+    
+
+    depends_on:
+      - mysqldb3
+      
+      
+      
+      
+  app2:
+    image: practica13v2
+
+    container_name: app2
+    
+    environment:
+      - SERVER_PORT=80
+
+    networks:
+      - practica13-mysql
+
+    
+
+    depends_on:
+      - mysqldb3
+      
+      
+    
+    
+  ha-proxy:
+
+    image: lol-haproxy
+
+    
+
+    container_name: docker-ha-proxy
+
+    networks:
+
+      - practica13-mysql
+
+
+
+    depends_on:
+
+      - app
+
+      - app2
+
+
+
+    volumes:
+
+      - /usr/local/etc/haproxy
+
+    
+
+    ports:
+
+      - "81:80"
+    
+
+
+  mysqldb3:
+    image: mysql:8
+
+    networks:
+      - practica13-mysql
+
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=practica4  
+
+      
+    volumes:
+      - mysql_db:/var/lib/mysql
+      
+      
+volumes:
+  mysql_db:
+
+networks:
+  practica13-mysql:
